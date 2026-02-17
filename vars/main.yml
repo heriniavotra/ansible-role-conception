@@ -1,0 +1,6 @@
+---
+# vars file for roles/database
+
+db_name: "app_db"
+db_user: "user1"
+db_user_password: "UserPass123!"

@@ -1,0 +1,53 @@
+# tasks file for roles/database
+---
+- name: Installer le paquet ACL
+  apt:
+    name: acl
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Installer PostgreSQL
+  apt:
+    name:
+      - postgresql
+      - python3-psycopg2
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: Démarrer PostgreSQL
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Créer la base de données
+  postgresql_db:
+    name: "{{ db_name }}"
+    state: present
+  become: yes
+  become_user: postgres
+
+- name: Créer l'utilisateur PostgreSQL
+  postgresql_user:
+    name: "{{ db_user }}"
+    password: "{{ db_user_password }}"
+    state: present
+  become: yes
+  become_user: postgres
+
+- name: Donner les privilèges sur la base
+  postgresql_privs:
+    database: "{{ db_name }}"
+    roles: "{{ db_user }}"
+    privs: ALL
+    type: database
+    state: present
+  become: yes
+  become_user: postgres
+
+
+
+
